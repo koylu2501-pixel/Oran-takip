@@ -1,13 +1,11 @@
 {
- "idd_ok": false,
+ "idd_ok": true,
  "last_log": [
   "iddaa: 42 maç kaydedildi",
   "Telegram anahtarı şu bota ait: @Orantakippp_bot",
-  "Telegram: bota henüz mesaj yazılmamış (getUpdates boş)",
-  "[Telegram yok: sohbet bulunamadı (bota /start yazılmamış)] ✅ Oran takip çalışıyor. iddaa bülteni okunabiliyor (42 maç).",
   "Pinnacle/Bet365 okuma: 0 satır · bu ay kullanılan: 9 / 230"
  ],
- "last_run": "2026-11-08T09:59:52Z",
+ "last_run": "2026-11-08T10:03:39Z",
  "op_done": {
   "id1000001772221386": [
    "erken"
@@ -97,5 +95,6 @@
  },
  "op_used": 9,
  "report_day": "2026-11-08",
- "reported": []
+ "reported": [],
+ "tg_chat": "810060031"
 }
