@@ -15,11 +15,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: python tools/basliklar.py
+      - run: python tools/gecmis.py
       - run: |
           git config user.name "oran-takip"
           git config user.email "oran-takip@users.noreply.github.com"
-          git add data/basliklar.json
+          git add data/gecmis.csv
           git diff --cached --quiet || git commit -m "veri sayımı"
           git pull --rebase -q || true
           git push -q || true
