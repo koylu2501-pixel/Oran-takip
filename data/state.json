@@ -2,10 +2,19 @@
  "idd_ok": false,
  "last_log": [
   "iddaa: 42 maç kaydedildi",
-  "[Telegram yok: TELEGRAM_TOKEN tanımlı değil] ✅ Oran takip çalışıyor. iddaa bülteni okunabiliyor (42 maç).",
-  "ODDSPAPI_KEY yok, Pinnacle atlandı"
+  "Telegram getUpdates hatası: TimeoutError",
+  "[Telegram yok: sohbet bulunamadı (bota /start yazılmamış)] ✅ Oran takip çalışıyor. iddaa bülteni okunabiliyor (42 maç).",
+  "OddsPapi turnuva bulundu: E0 17 Premier League",
+  "OddsPapi turnuva bulundu: T1 52 Super Lig",
+  "OddsPapi hatası: HTTPError HTTP Error 429: Too Many Requests"
  ],
- "last_run": "2026-11-08T09:05:30Z",
+ "last_run": "2026-11-08T09:21:55Z",
+ "op_month": "2026-11",
+ "op_tid": {
+  "E0": 17,
+  "T1": 52
+ },
+ "op_used": 3,
  "report_day": "2026-11-08",
  "reported": []
 }
