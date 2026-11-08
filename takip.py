@@ -30,7 +30,7 @@ OP_LEAGUES = {"E0": ("England", ["Premier League"]), "T1": ("Turkey", ["Super Li
               "P1": ("Portugal", ["Liga Portugal", "Primeira Liga", "Liga Portugal Betclic"]),
               "B1": ("Belgium", ["Pro League", "Jupiler Pro League", "First Division A"])}
 # Okuma pencereleri (maça kalan saat): ilk okuma 30 saat içinde ilk fırsatta, sonra 1.75–1 saat ve 0.5–0.15 saat kala
-WINDOWS = [("ilk", 1.0, 30.0), ("orta", 1.0, 1.75), ("son", 0.15, 0.5)]
+WINDOWS = [("ilk", 1.0, 30.0), ("orta", 1.0, 2.5), ("son", 0.05, 0.95)]
 MONTHLY_BUDGET = int(os.environ.get("ODDSPAPI_BUDGET", "235"))  # ücretsiz paket 250/ay, 20 yedek
 DROP_PCT = float(os.environ.get("DROP_PCT", "5"))        # Pinnacle düşüşü eşiği (%)
 UA = {"User-Agent": "oran-takip/1.0", "Accept": "application/json"}
@@ -271,6 +271,8 @@ def parse_ko(s):
 
 
 def main():
+    global now
+    now = datetime.now(timezone.utc)
     os.makedirs(DATA, exist_ok=True)
     st = load_state()
     ts = now.strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -309,7 +311,7 @@ def main():
                     if name not in got and lo <= left <= hi and (name == "ilk" or "ilk" in got):
                         win = name
                         break
-                if win is None and "ilk" not in got and 0.15 <= left < 1.0:
+                if win is None and "ilk" not in got and 0.05 <= left < 1.0:
                     win = "ilk"  # çok geç bulunan maç
                 if not win:
                     continue
@@ -401,4 +403,17 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    # GitHub'ın zamanlayıcısı düzensiz çalışabildiği için yoğun günlerde tek çalışma içinde 10 dakikada bir tekrar eder
+    loop_min = int(os.environ.get("LOOP_MIN", "0"))
+    if datetime.now(timezone.utc).strftime("%Y-%m-%d") == "2026-11-08":
+        loop_min = max(loop_min, 50)
+    end = time.time() + loop_min * 60
+    while True:
+        log_lines.clear()
+        try:
+            main()
+        except Exception as e:
+            print("hata:", type(e).__name__, e)
+        if time.time() + 600 > end:
+            break
+        time.sleep(600)
