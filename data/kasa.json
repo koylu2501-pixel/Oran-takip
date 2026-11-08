@@ -1,0 +1,55 @@
+{
+ "baslangic": 2000,
+ "bakiye": 1600,
+ "basis_orani": 0.2,
+ "kurallar": "Birebir Bet365 oran eşleşmesi (5-15 maç), hepsinde ya da biri hariç hepsinde tutan seçenek, iddaa oranı en az 1.30, her maçtan tek seçim, 3'lü kombine, kasanın %20'si.",
+ "kuponlar": [
+  {
+   "id": 1,
+   "tarih": "2026-11-08",
+   "olusturma": "2026-11-08T15:45Z",
+   "basis": 400,
+   "toplam_oran": 2.73,
+   "durum": "bekliyor",
+   "donus": 0,
+   "maclar": [
+    {
+     "lg": "F1",
+     "ko": "2026-11-08T16:15Z",
+     "h": "Brest",
+     "a": "Lyon",
+     "key": "2_89||Var",
+     "secim": "KG Var",
+     "oran": 1.5,
+     "gecmis": "5/5",
+     "yontem": "Bet365 kapanış MS birebir",
+     "sonuc": null
+    },
+    {
+     "lg": "T1",
+     "ko": "2026-11-08T18:00Z",
+     "h": "Besiktas",
+     "a": "Genclerbirligi",
+     "key": "2_603|3.5|Alt",
+     "secim": "Ev sahibi 3.5 Alt",
+     "oran": 1.34,
+     "gecmis": "5/5",
+     "yontem": "Bet365 kapanış MS birebir",
+     "sonuc": null
+    },
+    {
+     "lg": "P1",
+     "ko": "2026-11-08T20:30Z",
+     "h": "Estrela",
+     "a": "Benfica",
+     "key": "2_36||2",
+     "secim": "2. yarı Benfica",
+     "oran": 1.36,
+     "gecmis": "9/10",
+     "yontem": "Bet365 açılış 1 ve 2 birebir",
+     "sonuc": null
+    }
+   ]
+  }
+ ]
+}

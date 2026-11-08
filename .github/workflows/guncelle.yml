@@ -17,8 +17,6 @@ jobs:
           python-version: "3.12"
       - name: Güncel oranları oku
         env:
-          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           ODDSPAPI_KEY: ${{ secrets.ODDSPAPI_KEY }}
           FORCE_READ: "1"
         run: python takip.py
