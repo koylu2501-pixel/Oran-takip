@@ -24,6 +24,8 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           ODDSPAPI_KEY: ${{ secrets.ODDSPAPI_KEY }}
         run: python takip.py
+      - name: Uygulama verisi (6 saatte bir)
+        run: python tools/canli.py
       - name: Kaydet
         run: |
           git config user.name "oran-takip"

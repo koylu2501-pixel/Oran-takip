@@ -70,6 +70,17 @@ def append_csv(name, header, rows):
     if not rows:
         return
     p = os.path.join(DATA, name)
+    if os.path.exists(p):  # başlık değiştiyse eski satırları yeni başlığa taşı
+        with open(p, encoding="utf-8") as f:
+            old = list(csv.reader(f))
+        if old and old[0] != header:
+            oh = old[0]
+            with open(p, "w", newline="", encoding="utf-8") as f:
+                w = csv.writer(f)
+                w.writerow(header)
+                for r in old[1:]:
+                    d = dict(zip(oh, r))
+                    w.writerow([d.get(h, "") for h in header])
     new = not os.path.exists(p)
     with open(p, "a", newline="", encoding="utf-8") as f:
         w = csv.writer(f)
@@ -248,6 +259,15 @@ def op_ms(st, fid):
         b = books.get(slug)
         if not b or b.get("suspended"):
             continue
+        ou = None
+        m = (b.get("markets") or {}).get("1010")  # 2.5 Üst (1010) / Alt (1011)
+        if m:
+            pr = []
+            for oid in ("1010", "1011"):
+                pl = (((m.get("outcomes") or {}).get(oid) or {}).get("players") or {}).get("0") or {}
+                pr.append(pl.get("price") if pl.get("active", True) else None)
+            if all(isinstance(x, (int, float)) and x > 1 for x in pr):
+                ou = pr
         for mid in ("101", "10728"):
             m = (b.get("markets") or {}).get(mid)
             if not m:
@@ -258,7 +278,7 @@ def op_ms(st, fid):
                 p = ((o or {}).get("players") or {}).get("0") or {}
                 pr.append(p.get("price") if p.get("active", True) else None)
             if all(isinstance(x, (int, float)) and x > 1 for x in pr):
-                res[slug] = pr
+                res[slug] = pr + (ou or ["", ""])
                 break
     return res
 
@@ -326,7 +346,7 @@ def main():
             # eski maçları durumdan temizle
             keep = {f["fid"] for f in fxl}
             st["op_done"] = {k: v for k, v in done.items() if k in keep}
-            append_csv("pinnacle.csv", ["zaman", "fixture", "lig", "baslama", "ev", "dep", "buro", "pencere", "ms1", "ms0", "ms2"], pin_rows)
+            append_csv("pinnacle.csv", ["zaman", "fixture", "lig", "baslama", "ev", "dep", "buro", "pencere", "ms1", "ms0", "ms2", "ust25", "alt25"], pin_rows)
             log("Pinnacle/Bet365 okuma:", len(pin_rows), "satır · bu ay kullanılan:", st.get("op_used"), "/", MONTHLY_BUDGET)
         except Exception as e:
             log("OddsPapi hatası:", type(e).__name__, str(e)[:150])
