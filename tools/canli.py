@@ -74,6 +74,19 @@ def readings():
     return by
 
 
+try:  # OddsPapi'nin Bet365 oranlarını football-data'nın Bet365 basamaklarına yuvarla (1.54 -> 1.53 gibi)
+    LADDER = json.load(open(os.path.join(ROOT, "data", "b365_ladder.json")))
+except Exception:
+    LADDER = []
+
+
+def snap(v):
+    if not v or not LADDER:
+        return v
+    b = min(LADDER, key=lambda x: abs(x - v))
+    return b if abs(b - v) <= 0.021 else v
+
+
 def odds5(r):
     return [fnum(r.get(k)) for k in ("ms1", "ms0", "ms2", "ust25", "alt25")]
 
@@ -136,7 +149,7 @@ def main():
         bl, pl = b.get("bet365") or [], b.get("pinnacle") or []
         b365o = f["b365o"] if f["b365o"] and any(f["b365o"]) else (odds5(bl[0]) if bl else [None] * 5)
         fixtures.append({"lg": f["lg"], "ko": f["ko"].strftime("%Y-%m-%dT%H:%MZ"), "h": f["h"], "a": f["a"],
-                         "b365o": b365o, "b365c": odds5(bl[-1]) if bl else [None] * 5,
+                         "b365o": [snap(v) for v in b365o], "b365c": [snap(v) for v in odds5(bl[-1])] if bl else [None] * 5,
                          "pino": odds5(pl[0]) if pl else [None] * 5, "pinc": odds5(pl[-1]) if pl else [None] * 5,
                          "son": (pl or bl)[-1]["zaman"] if (pl or bl) else None})
     fixtures.sort(key=lambda x: (x["ko"], x["lg"]))
