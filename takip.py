@@ -327,11 +327,13 @@ def main():
                 left = (ko - now).total_seconds() / 3600
                 got = done.get(f["fid"], [])
                 win = None
-                for name, lo, hi in WINDOWS:
+                if os.environ.get("FORCE_READ") == "1" and left > 0:  # elle güncelleme: başlamamış her maçı bir kez oku
+                    win = "elle"
+                for name, lo, hi in ([] if win else WINDOWS):
                     if name not in got and lo <= left <= hi and (name == "ilk" or "ilk" in got):
                         win = name
                         break
-                if win is None and "ilk" not in got and 0.05 <= left < 1.0:
+                if win is None and "ilk" not in got and 0.05 <= left < 1.0 and os.environ.get("FORCE_READ") != "1":
                     win = "ilk"  # çok geç bulunan maç
                 if not win:
                     continue
@@ -425,7 +427,7 @@ def main():
 if __name__ == "__main__":
     # GitHub'ın zamanlayıcısı düzensiz çalışabildiği için yoğun günlerde tek çalışma içinde 10 dakikada bir tekrar eder
     loop_min = int(os.environ.get("LOOP_MIN", "0"))
-    if datetime.now(timezone.utc).strftime("%Y-%m-%d") == "2026-11-08":
+    if datetime.now(timezone.utc).strftime("%Y-%m-%d") == "2026-11-08" and os.environ.get("FORCE_READ") != "1":
         loop_min = max(loop_min, 50)
     end = time.time() + loop_min * 60
     while True:
