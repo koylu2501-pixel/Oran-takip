@@ -1,18 +1,10 @@
 {
  "idd_ok": true,
  "last_log": [
-  "iddaa: 42 maç kaydedildi",
-  "OddsPapi turnuva bulundu: SP1 8 LaLiga",
-  "OddsPapi turnuva bulundu: I1 23 Serie A",
-  "OddsPapi turnuva bulundu: D1 35 Bundesliga",
-  "OddsPapi turnuva bulundu: F1 34 Ligue 1",
-  "OddsPapi turnuva bulundu: N1 37 Eredivisie",
-  "OddsPapi turnuva bulundu: P1 238 Liga Portugal",
-  "OddsPapi turnuva bulundu: B1 38 Pro League",
-  "OddsPapi maç listesi: 43 maç",
-  "Pinnacle/Bet365 okuma: 70 satır · bu ay kullanılan: 59 / 235"
+  "iddaa: 41 maç kaydedildi",
+  "Pinnacle/Bet365 okuma: 0 satır · bu ay kullanılan: 59 / 235"
  ],
- "last_run": "2026-11-08T10:07:20Z",
+ "last_run": "2026-11-08T10:39:26Z",
  "op_done": {
   "id1000000872478686": [
    "ilk"
