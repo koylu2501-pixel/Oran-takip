@@ -88,6 +88,11 @@ def tg_chat_id(st):
         return st["tg_chat"]
     if not TG_TOKEN:
         return None
+    try:
+        me = get_json(f"https://api.telegram.org/bot{TG_TOKEN}/getMe", timeout=40).get("result", {})
+        log("Telegram anahtarı şu bota ait: @" + str(me.get("username")))
+    except Exception as e:
+        log("Telegram getMe hatası:", type(e).__name__, str(e)[:80])
     d = None
     for attempt in range(2):  # bota ilk mesajı atan sohbeti bul
         try:
