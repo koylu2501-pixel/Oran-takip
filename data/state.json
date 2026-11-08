@@ -1,16 +1,18 @@
 {
  "idd_ok": true,
  "last_log": [
-  "iddaa: 38 maç kaydedildi",
-  "Pinnacle/Bet365 okuma: 2 satır · bu ay kullanılan: 79 / 235"
+  "iddaa: 36 maç kaydedildi",
+  "Pinnacle/Bet365 okuma: 59 satır · bu ay kullanılan: 116 / 235"
  ],
- "last_run": "2026-11-08T12:50:56Z",
+ "last_run": "2026-11-08T13:27:16Z",
  "op_done": {
   "id1000000872478686": [
-   "ilk"
+   "ilk",
+   "elle"
   ],
   "id1000000872478688": [
-   "ilk"
+   "ilk",
+   "elle"
   ],
   "id1000000872478690": [
    "ilk",
@@ -19,79 +21,100 @@
   ],
   "id1000000872478698": [
    "ilk",
-   "orta"
+   "orta",
+   "elle"
   ],
   "id1000000872478704": [
-   "ilk"
+   "ilk",
+   "elle"
   ],
   "id1000001772221374": [
    "ilk",
-   "orta"
+   "orta",
+   "elle"
   ],
   "id1000001772221376": [
    "ilk",
-   "orta"
+   "orta",
+   "elle"
   ],
   "id1000001772221382": [
    "ilk",
-   "orta"
+   "orta",
+   "elle"
   ],
   "id1000001772221386": [
-   "ilk"
+   "ilk",
+   "elle"
   ],
   "id1000001772221390": [
    "ilk",
-   "orta"
+   "orta",
+   "elle"
   ],
   "id1000002371945388": [
-   "ilk"
+   "ilk",
+   "elle"
   ],
   "id1000002371945390": [
    "ilk",
-   "orta"
+   "orta",
+   "elle"
   ],
   "id1000002371945392": [
-   "ilk"
+   "ilk",
+   "elle"
   ],
   "id1000002371945394": [
    "ilk",
-   "orta"
+   "orta",
+   "elle"
   ],
   "id1000002371945396": [
    "ilk",
    "son"
   ],
   "id1000003472036274": [
-   "ilk"
+   "ilk",
+   "elle"
   ],
   "id1000003472036278": [
-   "ilk"
+   "ilk",
+   "elle"
   ],
   "id1000003472036280": [
-   "ilk"
+   "ilk",
+   "elle"
   ],
   "id1000003472036282": [
-   "ilk"
+   "ilk",
+   "elle"
   ],
   "id1000003472036284": [
-   "ilk"
+   "ilk",
+   "elle"
   ],
   "id1000003472036288": [
    "ilk",
-   "orta"
+   "orta",
+   "elle"
   ],
   "id1000003572513298": [
-   "ilk"
+   "ilk",
+   "elle"
   ],
   "id1000003572513300": [
-   "ilk"
+   "ilk",
+   "elle"
   ],
   "id1000003572513306": [
    "ilk",
-   "orta"
+   "orta",
+   "elle"
   ],
   "id1000003772041236": [
-   "ilk"
+   "ilk",
+   "elle"
   ],
   "id1000003772041240": [
    "ilk",
@@ -100,13 +123,16 @@
   "id1000003772041242": [
    "ilk",
    "orta",
-   "son"
+   "son",
+   "elle"
   ],
   "id1000003772041244": [
-   "ilk"
+   "ilk",
+   "elle"
   ],
   "id1000003772041246": [
-   "ilk"
+   "ilk",
+   "elle"
   ],
   "id1000003872366432": [
    "ilk",
@@ -114,17 +140,21 @@
    "son"
   ],
   "id1000003872366434": [
-   "ilk"
+   "ilk",
+   "elle"
   ],
   "id1000003872366438": [
    "ilk",
-   "orta"
+   "orta",
+   "elle"
   ],
   "id1000003872366448": [
-   "ilk"
+   "ilk",
+   "elle"
   ],
   "id1000005272723308": [
-   "ilk"
+   "ilk",
+   "elle"
   ],
   "id1000005272723310": [
    "son",
@@ -136,25 +166,32 @@
    "son"
   ],
   "id1000005272723318": [
-   "ilk"
+   "ilk",
+   "elle"
   ],
   "id1000023872531002": [
-   "ilk"
+   "ilk",
+   "elle"
   ],
   "id1000023872531004": [
-   "ilk"
+   "ilk",
+   "elle"
   ],
   "id1000023872531008": [
-   "ilk"
+   "ilk",
+   "elle"
   ],
   "id1000023872531010": [
-   "ilk"
+   "ilk",
+   "elle"
   ],
   "id1000023872531012": [
-   "ilk"
+   "ilk",
+   "elle"
   ],
   "id1000023872531016": [
-   "ilk"
+   "ilk",
+   "elle"
   ]
  },
  "op_fx": {
@@ -486,9 +523,12 @@
   "SP1": 8,
   "T1": 52
  },
- "op_used": 79,
+ "op_used": 116,
  "report_day": "2026-11-08",
- "reported": [],
+ "reported": [
+  "Çorum FK–Fenerbahçe MS 1: sinyalde 3.39, maç başı 3.18, iddaa 10 dk sonra düştü",
+  "Çorum FK–Fenerbahçe MS 0: sinyalde 3.54, maç başı 3.47, iddaa 10 dk sonra düştü"
+ ],
  "sent": [
   "id1000003772041242|1",
   "id1000005272723314|0",
