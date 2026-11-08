@@ -9,7 +9,7 @@ Her çalışmada:
   4) Günde bir, sinyallerin sonradan ne olduğunu (iddaa düştü mü, kaç dakikada) rapor eder.
 Sadece Python standart kütüphanesi kullanır.
 """
-import csv, json, os, re, sys, time, unicodedata, urllib.parse, urllib.request
+import csv, json, os, re, sys, time, unicodedata, urllib.error, urllib.parse, urllib.request
 from datetime import datetime, timezone, timedelta
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -88,16 +88,22 @@ def tg_chat_id(st):
         return st["tg_chat"]
     if not TG_TOKEN:
         return None
-    try:  # bota ilk mesajı atan sohbeti bul
-        d = get_json(f"https://api.telegram.org/bot{TG_TOKEN}/getUpdates")
+    d = None
+    for attempt in range(2):  # bota ilk mesajı atan sohbeti bul
+        try:
+            d = get_json(f"https://api.telegram.org/bot{TG_TOKEN}/getUpdates", timeout=40)
+            break
+        except Exception as e:
+            log("Telegram getUpdates hatası:", type(e).__name__)
+            time.sleep(3)
+    if d:
         for u in reversed(d.get("result", [])):
             m = u.get("message") or u.get("channel_post") or {}
             cid = (m.get("chat") or {}).get("id")
             if cid:
                 st["tg_chat"] = str(cid)
                 return st["tg_chat"]
-    except Exception as e:
-        log("Telegram getUpdates hatası:", type(e).__name__)
+        log("Telegram: bota henüz mesaj yazılmamış (getUpdates boş)")
     return None
 
 
@@ -167,10 +173,20 @@ def op_get(st, path, params):
         st["op_month"], st["op_used"] = month, 0
     if st.get("op_used", 0) >= MONTHLY_BUDGET:
         raise RuntimeError("aylık OddsPapi kotası doldu")
-    st["op_used"] = st.get("op_used", 0) + 1
     p = dict(params)
     p["apiKey"] = OP_KEY
-    return get_json(f"{OP}/{path}", p)
+    for attempt in range(3):
+        time.sleep(2)  # OddsPapi hız sınırı
+        st["op_used"] = st.get("op_used", 0) + 1
+        try:
+            return get_json(f"{OP}/{path}", p, timeout=40)
+        except urllib.error.HTTPError as e:
+            if e.code == 429 and attempt < 2:
+                wait = min(30, int(e.headers.get("Retry-After") or 10))
+                log(f"OddsPapi 429, {wait} sn bekleniyor")
+                time.sleep(wait)
+                continue
+            raise
 
 
 def op_tournaments(st):
