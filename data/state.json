@@ -1,10 +1,10 @@
 {
  "idd_ok": true,
  "last_log": [
-  "iddaa: 41 maç kaydedildi",
-  "Pinnacle/Bet365 okuma: 0 satır · bu ay kullanılan: 59 / 235"
+  "iddaa: 40 maç kaydedildi",
+  "Pinnacle/Bet365 okuma: 0 satır · bu ay kullanılan: 65 / 235"
  ],
- "last_run": "2026-11-08T10:39:26Z",
+ "last_run": "2026-11-08T11:29:03Z",
  "op_done": {
   "id1000000872478686": [
    "ilk"
@@ -13,7 +13,8 @@
    "ilk"
   ],
   "id1000000872478690": [
-   "ilk"
+   "ilk",
+   "orta"
   ],
   "id1000000872478698": [
    "ilk"
@@ -49,7 +50,8 @@
    "ilk"
   ],
   "id1000002371945396": [
-   "ilk"
+   "ilk",
+   "son"
   ],
   "id1000003472036274": [
    "ilk"
@@ -82,10 +84,12 @@
    "ilk"
   ],
   "id1000003772041240": [
-   "ilk"
+   "ilk",
+   "son"
   ],
   "id1000003772041242": [
-   "ilk"
+   "ilk",
+   "orta"
   ],
   "id1000003772041244": [
    "ilk"
@@ -94,7 +98,8 @@
    "ilk"
   ],
   "id1000003872366432": [
-   "ilk"
+   "ilk",
+   "orta"
   ],
   "id1000003872366434": [
    "ilk"
@@ -113,7 +118,8 @@
    "ilk"
   ],
   "id1000005272723314": [
-   "ilk"
+   "ilk",
+   "orta"
   ],
   "id1000005272723318": [
    "ilk"
@@ -466,7 +472,7 @@
   "SP1": 8,
   "T1": 52
  },
- "op_used": 59,
+ "op_used": 65,
  "report_day": "2026-11-08",
  "reported": [],
  "sent": [],
