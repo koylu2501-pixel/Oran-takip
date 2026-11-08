@@ -104,7 +104,8 @@ def tg_chat_id(st):
 def tg_send(st, text):
     cid = tg_chat_id(st)
     if not (TG_TOKEN and cid):
-        log("[Telegram yok] " + text.replace("\n", " | "))
+        why = "TELEGRAM_TOKEN tanımlı değil" if not TG_TOKEN else "sohbet bulunamadı (bota /start yazılmamış)"
+        log(f"[Telegram yok: {why}] " + text.replace("\n", " | "))
         return False
     try:
         data = urllib.parse.urlencode({"chat_id": cid, "text": text[:4000], "disable_web_page_preview": "true"}).encode()
