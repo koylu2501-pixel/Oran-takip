@@ -264,7 +264,7 @@ def main():
     acik = sum(c["basis"] for c in k["kuponlar"] if c["durum"] == "bekliyor")
     msgs.append(f"💰 Sanal kasa: {k['bakiye']:.0f} TL (+ bekleyen kuponlarda {acik:.0f} TL) · başlangıç {k['baslangic']} TL")
     print("\n\n".join(msgs))
-    if os.environ.get("TELEGRAM_TOKEN"):
+    if os.environ.get("TELEGRAM_TOKEN") and (len(msgs) > 1 or os.environ.get("KUPON", "1") == "1"):
         st = T.load_state()
         T.tg_send(st, "\n\n".join(msgs))
         T.save_state(st)
