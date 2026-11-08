@@ -24,8 +24,14 @@ OP_KEY = os.environ.get("ODDSPAPI_KEY", "").strip()
 # iddaa yarışma kodları -> bizim lig kodlarımız (iddaa kaydı 9 lig için)
 ICI = {43: "E0", 129: "SP1", 143: "I1", 45: "D1", 381: "F1", 584: "T1", 322: "N1", 566: "P1", 148: "B1"}
 # Pinnacle takibi (ücretsiz kota için sadece 2 lig). OddsPapi tournamentId'leri ilk çalışmada isimden bulunur.
-OP_LEAGUES = {"E0": ("England", "Premier League"), "T1": ("Turkey", "Super Lig")}
-MONTHLY_BUDGET = int(os.environ.get("ODDSPAPI_BUDGET", "230"))  # ücretsiz paket 250/ay, 20 yedek
+OP_LEAGUES = {"E0": ("England", ["Premier League"]), "T1": ("Turkey", ["Super Lig"]),
+              "SP1": ("Spain", ["LaLiga", "La Liga"]), "I1": ("Italy", ["Serie A"]), "D1": ("Germany", ["Bundesliga"]),
+              "F1": ("France", ["Ligue 1"]), "N1": ("Netherlands", ["Eredivisie"]),
+              "P1": ("Portugal", ["Liga Portugal", "Primeira Liga", "Liga Portugal Betclic"]),
+              "B1": ("Belgium", ["Pro League", "Jupiler Pro League", "First Division A"])}
+# Okuma pencereleri (maça kalan saat): ilk okuma 30 saat içinde ilk fırsatta, sonra 1.75–1 saat ve 0.5–0.15 saat kala
+WINDOWS = [("ilk", 1.0, 30.0), ("orta", 1.0, 1.75), ("son", 0.15, 0.5)]
+MONTHLY_BUDGET = int(os.environ.get("ODDSPAPI_BUDGET", "235"))  # ücretsiz paket 250/ay, 20 yedek
 DROP_PCT = float(os.environ.get("DROP_PCT", "5"))        # Pinnacle düşüşü eşiği (%)
 UA = {"User-Agent": "oran-takip/1.0", "Accept": "application/json"}
 
@@ -200,10 +206,11 @@ def op_tournaments(st):
     if missing:
         ts = op_get(st, "tournaments", {"sportId": 10})
         for lg in missing:
-            country, name = OP_LEAGUES[lg]
-            c = [t for t in ts if str(t.get("tournamentName", "")).lower() == name.lower()]
-            c2 = [t for t in c if country.lower() in json.dumps(t, ensure_ascii=False).lower()]
-            pick = (c2 or c or [None])[0]
+            country, names = OP_LEAGUES[lg]
+            nl = [n.lower() for n in names]
+            c = [t for t in ts if str(t.get("tournamentName", "")).lower() in nl]
+            c2 = [t for t in c if country.lower() in str(t.get("categoryName", "")).lower()]
+            pick = (c2 or [None])[0]
             if pick:
                 tid[lg] = pick["tournamentId"]
                 log("OddsPapi turnuva bulundu:", lg, pick["tournamentId"], pick.get("tournamentName"))
@@ -216,7 +223,7 @@ def op_tournaments(st):
 def op_fixtures(st, tid):
     """Maç listesi en fazla 2 günde bir çekilir (kota)."""
     cache = st.get("op_fx") or {}
-    fresh = cache.get("at") and (now - datetime.fromisoformat(cache["at"])) < timedelta(hours=44)
+    fresh = cache.get("at") and (now - datetime.fromisoformat(cache["at"])) < timedelta(hours=44) and set(cache.get("lgs", [])) >= set(tid)
     if fresh:
         return cache["list"]
     lst = []
@@ -228,7 +235,7 @@ def op_fixtures(st, tid):
                 continue
             lst.append({"fid": f["fixtureId"], "lg": lg, "ko": f.get("startTime") or f.get("trueStartTime"),
                         "h": f.get("participant1Name", ""), "a": f.get("participant2Name", "")})
-    st["op_fx"] = {"at": now.isoformat(), "list": lst}
+    st["op_fx"] = {"at": now.isoformat(), "list": lst, "lgs": sorted(tid)}
     log("OddsPapi maç listesi:", len(lst), "maç")
     return lst
 
@@ -289,13 +296,22 @@ def main():
             tid = op_tournaments(st)
             fxl = op_fixtures(st, tid)
             done = st.setdefault("op_done", {})  # fid -> okunan pencereler
+            for k, v in done.items():  # eski adlar
+                done[k] = ["ilk" if x == "erken" else "son" if x == "gec" else x for x in v]
             for f in fxl:
                 ko = parse_ko(f["ko"])
                 if not ko:
                     continue
                 left = (ko - now).total_seconds() / 3600
-                win = "erken" if 6 <= left <= 30 else "gec" if 0.5 <= left <= 2 else None
-                if not win or win in done.get(f["fid"], []):
+                got = done.get(f["fid"], [])
+                win = None
+                for name, lo, hi in WINDOWS:
+                    if name not in got and lo <= left <= hi and (name == "ilk" or "ilk" in got):
+                        win = name
+                        break
+                if win is None and "ilk" not in got and 0.15 <= left < 1.0:
+                    win = "ilk"  # çok geç bulunan maç
+                if not win:
                     continue
                 try:
                     od = op_ms(st, f["fid"])
@@ -315,19 +331,21 @@ def main():
     else:
         log("ODDSPAPI_KEY yok, Pinnacle atlandı")
 
-    # 3) sinyal: Pinnacle erken -> geç düşüş, iddaa hâlâ yüksek
+    # 3) sinyal: Pinnacle ilk okumadan bu okumaya düştü, iddaa hâlâ yüksek
     if pin_rows:
         allpin = [r for r in read_csv("pinnacle.csv") if r["buro"] == "pinnacle"]
-        for r in [r for r in pin_rows if r[6] == "pinnacle" and r[7] == "gec"]:
+        sent = set(st.get("sent", []))
+        for r in [r for r in pin_rows if r[6] == "pinnacle" and r[7] in ("orta", "son")]:
             fid = r[1]
-            early = [x for x in allpin if x["fixture"] == fid and x["pencere"] == "erken"]
-            if not early:
+            first = [x for x in allpin if x["fixture"] == fid and x["pencere"] in ("ilk", "erken")]
+            if not first:
                 continue
-            e0 = [float(early[-1][k]) for k in ("ms1", "ms0", "ms2")]
+            e0 = [float(first[0][k]) for k in ("ms1", "ms0", "ms2")]
             c0 = [float(x) for x in r[8:11]]
             ko = parse_ko(r[3])
             im = [e for e in idd if e["lg"] == r[2] and abs((e["ko"] - ko).total_seconds()) <= 3600 and (sim(e["h"], r[4]) or sim(e["a"], r[5]))]
             if len(im) != 1:
+                log("iddaa eşleşmedi:", r[4], "-", r[5], len(im))
                 continue
             ie = im[0]
             inv = sum(1 / x for x in c0)
@@ -337,20 +355,21 @@ def main():
                 if drop > -DROP_PCT:
                     continue
                 val = ie["o"][i] / fair[i] - 1
+                key = f"{fid}|{lab}"
+                if key in sent:
+                    continue
+                sent.add(key)
                 append_csv("sinyaller.csv", ["zaman", "lig", "baslama", "ev", "dep", "secenek", "pin_erken", "pin_gec", "pin_adil", "iddaa", "deger_pct", "iddaa_id"],
                            [[ts, r[2], r[3], ie["h"], ie["a"], "MS " + lab, e0[i], c0[i], round(fair[i], 3), ie["o"][i], round(val * 100, 1), ie["id"]]])
-                if val > 0:
-                    kt = ko.astimezone(TR).strftime("%H:%M")
-                    tg_send(st, f"📉 Sinyal · {kt} {ie['h']} – {ie['a']}\nMS {lab}: Pinnacle {e0[i]:.2f} → {c0[i]:.2f} ({drop:.0f}%)\n"
-                                f"Pinnacle adil oran {fair[i]:.2f} · iddaa şu an {ie['o'][i]:.2f} (değer +{val*100:.0f}%)\n"
-                                f"Bu bir test sinyalidir; iddaa'da oranı kontrol et.")
-                else:
-                    log(f"Düşüş var ama iddaa zaten düşük: {ie['h']} MS {lab} iddaa {ie['o'][i]} adil {fair[i]:.2f}")
+                kt = ko.astimezone(TR).strftime("%H:%M")
+                head = "📉 SİNYAL" if val > 0 else "ℹ️ Düşüş var, iddaa da düşmüş"
+                tg_send(st, f"{head} · {kt} {ie['h']} – {ie['a']}\nMS {lab}: Pinnacle {e0[i]:.2f} → {c0[i]:.2f} ({drop:.0f}%)\n"
+                            f"Pinnacle adil oran {fair[i]:.2f} · iddaa şu an {ie['o'][i]:.2f} ({'+' if val >= 0 else ''}{val*100:.0f}%)\n"
+                            f"Test sinyali; oynamadan önce iddaa'daki oranı kontrol et.")
+        st["sent"] = sorted(sent)[-500:]
 
     # 4) günlük rapor (TR 10:00 sonrası ilk çalışma)
-    today = now.astimezone(TR).strftime("%Y-%m-%d")
-    if now.astimezone(TR).hour >= 10 and st.get("report_day") != today:
-        st["report_day"] = today
+    if True:
         sig = read_csv("sinyaller.csv")
         iddrows = read_csv("iddaa.csv")
         lines = []
@@ -372,8 +391,9 @@ def main():
         st.setdefault("reported", [])
         new = [l for l in lines if l not in st["reported"]]
         st["reported"] = (st["reported"] + new)[-300:]
-        head = f"📊 Günlük rapor · iddaa kaydı {len(iddrows)} satır · OddsPapi bu ay {st.get('op_used', 0)}/{MONTHLY_BUDGET}"
-        tg_send(st, head + ("\n" + "\n".join(new[:25]) if new else "\nYeni sonuçlanmış sinyal yok."))
+        if new:
+            head = f"📊 Sinyal sonuçları · OddsPapi bu ay {st.get('op_used', 0)}/{MONTHLY_BUDGET}"
+            tg_send(st, head + "\n" + "\n".join(new[:25]))
 
     st["last_run"] = ts
     st["last_log"] = log_lines[-20:]

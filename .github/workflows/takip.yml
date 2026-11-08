@@ -2,6 +2,7 @@ name: oran-takip
 on:
   schedule:
     - cron: "7,37 * * * *"   # her 30 dakikada bir (GitHub birkaç dakika geciktirebilir)
+    - cron: "2,22,42,52 * 8 11 *"  # sadece 8 Kasım: daha sık (milli ara öncesi son gün)
   workflow_dispatch: {}
 permissions:
   contents: write
