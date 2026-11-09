@@ -10,7 +10,7 @@
    "olusturma": "2026-11-08T15:45Z",
    "basis": 400,
    "toplam_oran": 2.73,
-   "durum": "bekliyor",
+   "durum": "kaybetti",
    "donus": 0,
    "maclar": [
     {
@@ -23,7 +23,8 @@
      "oran": 1.5,
      "gecmis": "5/5",
      "yontem": "Bet365 kapanış MS birebir",
-     "sonuc": null
+     "sonuc": "yattı",
+     "skor": "2-0 (İY 1-0)"
     },
     {
      "lg": "T1",
@@ -35,7 +36,8 @@
      "oran": 1.34,
      "gecmis": "5/5",
      "yontem": "Bet365 kapanış MS birebir",
-     "sonuc": null
+     "sonuc": "tuttu",
+     "skor": "3-0 (İY 2-0)"
     },
     {
      "lg": "P1",
@@ -47,10 +49,11 @@
      "oran": 1.36,
      "gecmis": "9/10",
      "yontem": "Bet365 açılış 1 ve 2 birebir",
-     "sonuc": null
+     "sonuc": "yattı",
+     "skor": "2-3 (İY 0-1)"
     }
    ]
   }
  ],
- "guncelleme": "2026-11-09T08:50Z"
+ "guncelleme": "2026-11-09T21:57Z"
 }
