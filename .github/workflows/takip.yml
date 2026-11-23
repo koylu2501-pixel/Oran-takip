@@ -1,8 +1,5 @@
 name: oran-takip
 on:
-  schedule:
-    - cron: "7,37 * * * *"   # her 30 dakikada bir (GitHub birkaç dakika geciktirebilir)
-    - cron: "2,22,42,52 * 8 11 *"  # sadece 8 Kasım: daha sık (milli ara öncesi son gün)
   workflow_dispatch: {}
 permissions:
   contents: write
@@ -20,8 +17,6 @@ jobs:
           python-version: "3.12"
       - name: Oranları oku
         env:
-          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           ODDSPAPI_KEY: ${{ secrets.ODDSPAPI_KEY }}
         run: python takip.py
       - name: Uygulama verisi (6 saatte bir)

@@ -1,8 +1,5 @@
 name: sanal-kasa
 on:
-  schedule:
-    - cron: "37 7 * * *"    # her gün ~10:37 TR: önceki kuponları sonuçlandır, bugünün kuponunu kur
-    - cron: "17 21 * * *"   # her gece ~00:17 TR: sadece sonuçlandırma
   workflow_dispatch: {}
 permissions:
   contents: write
@@ -20,8 +17,6 @@ jobs:
           python-version: "3.12"
       - name: Sanal kasa
         env:
-          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           KUPON: ${{ github.event.schedule == '17 21 * * *' && '0' || '1' }}
         run: python tools/kasa.py
       - run: |
